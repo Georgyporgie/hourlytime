@@ -6,40 +6,33 @@
     <title>Hourly Announcements</title>
 </head>
 <body>
-    <audio id="hourlyAnnouncement" src=""></audio>
+    <audio id="hourlyAnnouncement"></audio>
 
     <script>
-        // Function to play the announcement for the current hour
+        var sources = ["0.mp3", "1.mp3", "2.mp3", "3.mp3, "4.mp3", "5.mp3", "6.mp3", "7.mp3", "8.mp3", "9.mp3", "10.mp3", "11.mp3", "12.mp3", "13.mp3", "14.mp3", "15.mp3", "16.mp3", "17.mp3", "18.mp3", "19.mp3", "20.mp3", "21.mp3", "22.mp3", "23.mp3"]; // Array of audio sources
+        var currentIndex = 0;
+
         function playHourlyAnnouncement() {
-            var now = new Date();
-            var hour = now.getHours();
-            var audio = document.getElementById("hourlyAnnouncement");
+            var audioElement = document.getElementById('hourlyAnnouncement');
+            var currentTime = new Date();
+            var minutes = currentTime.getMinutes();
+            var seconds = currentTime.getSeconds();
+            var millisecondsToNextHour = ((59 - minutes) * 60 + (60 - seconds)) * 1000;
 
-            // Set the source to the appropriate MP3 file based on the current hour
-            audio.setAttribute('src', `muziek/effects/${hour}.mp3`);
-
-            audio.play().then(() => {
-                console.log(`Playing hourly announcement: ${hour} o'clock`);
-            }).catch(error => {
-                console.error(`Error playing hourly announcement:`, error);
-            });
-        }
-
-        // Function to schedule the hourly announcements
-        function scheduleHourlyAnnouncement() {
-            console.log("Scheduling hourly announcements...");
-            var now = new Date();
-            var millisUntilNextHour = (60 - now.getMinutes()) * 60 * 1000 - now.getSeconds() * 1000 - now.getMilliseconds();
-            
-            console.log(`Milliseconds until next hour: ${millisUntilNextHour}`);
-            
             setTimeout(function() {
-                playHourlyAnnouncement();
-                setInterval(playHourlyAnnouncement, 3600000); // Every hour (3600000 milliseconds)
-            }, millisUntilNextHour);
+                audioElement.src = sources[currentIndex];
+                audioElement.play();
+                currentIndex = (currentIndex + 1) % sources.length;
+
+                setInterval(function() {
+                    audioElement.src = sources[currentIndex];
+                    audioElement.play();
+                    currentIndex = (currentIndex + 1) % sources.length;
+                }, 3600000); // Play every hour
+            }, millisecondsToNextHour);
         }
 
-        window.onload = scheduleHourlyAnnouncement;
+        playHourlyAnnouncement();
     </script>
 </body>
 </html>

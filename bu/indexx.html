@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hourly Announcements</title>
+</head>
+<body>
+    <audio id="hourlyAnnouncement" src=""></audio>
+
+    <script>
+        // Function to play the announcement for the current hour
+        function playHourlyAnnouncement() {
+            var now = new Date();
+            var hour = now.getHours();
+            var audio = document.getElementById("hourlyAnnouncement");
+
+            // Set the source to the appropriate MP3 file based on the current hour
+            audio.setAttribute('src', `muziek/effects/${hour}.mp3`);
+
+            audio.play().then(() => {
+                console.log(`Playing hourly announcement: ${hour} o'clock`);
+            }).catch(error => {
+                console.error(`Error playing hourly announcement:`, error);
+            });
+        }
+
+        // Function to schedule the hourly announcements
+        function scheduleHourlyAnnouncement() {
+            console.log("Scheduling hourly announcements...");
+            var now = new Date();
+            var millisUntilNextHour = (60 - now.getMinutes()) * 60 * 1000 - now.getSeconds() * 1000 - now.getMilliseconds();
+            
+            console.log(`Milliseconds until next hour: ${millisUntilNextHour}`);
+            
+            setTimeout(function() {
+                playHourlyAnnouncement();
+                setInterval(playHourlyAnnouncement, 3600000); // Every hour (3600000 milliseconds)
+            }, millisUntilNextHour);
+        }
+
+        window.onload = scheduleHourlyAnnouncement;
+    </script>
+</body>
+</html>
+
+
